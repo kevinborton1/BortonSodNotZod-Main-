@@ -1,0 +1,223 @@
+//Author: Kevin Borton
+//Course: CPT187
+//Purpose: Order Sod for new home.
+//Start Date: 1/26/2020
+
+
+package edu.cpt187.borton.participation;
+
+import java.util.Scanner;
+
+
+
+public class Main {
+
+	public static final String[] MENU_OPTIONS = {"Create Order","Quit"};
+
+	public static void main(String[] args) 
+	{
+		Scanner input = new Scanner(System.in);
+
+		String userName="";
+		char menuSelection=' ';
+
+		sodOrder mySodOrder = new sodOrder();
+
+		displayWelcomeBanner();
+		userName = getUserName(input);
+		menuSelection = vailidateMainMenu(input);
+		while (menuSelection != 'Q')
+		{
+			mySodOrder.setItemSelection(validateItemMenu(input,mySodOrder.getItemNames(),mySodOrder.getItemPrice()));
+			mySodOrder.setItemName();
+			mySodOrder.setItemPrice();
+			mySodOrder.setHowMany(validateHowMany(input));
+			mySodOrder.setDiscountType(validateDiscountMenu(input,mySodOrder.getDiscountName(),mySodOrder.getDiscountPrice()));
+			mySodOrder.setDiscountName();
+			mySodOrder.setDiscountRate();
+			mySodOrder.setPrizeName();
+			displayItemReceipt(mySodOrder.getItemName(), mySodOrder.getItemPrice(),mySodOrder.getHowMany(),mySodOrder.getDiscountName(), mySodOrder.getDiscountRate(), mySodOrder.getDiscountAmt()
+					, mySodOrder.getDiscountPrice(), mySodOrder.getSubTotal(), mySodOrder.getTaxRate(), mySodOrder.getTaxAmt(), mySodOrder.getTotalCost(), mySodOrder.getPrizeName());
+
+			menuSelection = vailidateMainMenu(input);
+
+		}//end of while
+
+		if (mySodOrder.getTotalCost() > 0.0) {
+			displayFinalReport(mySodOrder.getItemNames(), mySodOrder.getItemCounts(), mySodOrder.getDiscountNames(), mySodOrder.getDiscountCount(), mySodOrder.getPrizeCounts(),mySodOrder.getPrizeNames());
+		}//end of if
+
+		displayFarewellMessage(userName);
+
+
+	}//end of main
+	
+	public static void displayFinalReport(String[] itemNames, int[] itemCounts, String[] discountNames,
+			int[] discountCount, int[] prizeCounts, String[] prizeNames)
+	{
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ");
+		System.out.println( "Final Report");
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ");
+		System.out.printf("\n%-20s%-7s%-10d", itemNames[0], " Count:", itemCounts[0]);
+		System.out.printf("\n%-20s%-7s%-10d", itemNames[1], " Count:", itemCounts[1]);
+		System.out.printf("\n%-20s%-7s%-10d", itemNames[2], " Count:", itemCounts[2] );
+		System.out.println("\n");
+		System.out.printf("\n%-20s%-7s%-10d", discountNames [0], " Count:", discountCount[0]);
+		System.out.printf("\n%-20s%-7s%-10d", discountNames [1], " Count:", discountCount[1]);
+		System.out.printf("\n%-20s%-7s%-10d", discountNames [2], " Count:", discountCount[2]);
+		System.out.println("\n");
+		System.out.printf("\n%-20s%-7s%-10d", prizeNames [0], " Count:", prizeCounts[0]);
+		System.out.printf("\n%-20s%-7s%-10d", prizeNames [1], " Count:", prizeCounts[1]);
+		System.out.printf("\n%-20s%-7s%-10d", prizeNames [2], " Count:", prizeCounts[2]);
+
+
+	}
+	public static void displayItemReceipt(String itemName, double itemPrice, int howMany, String discountName,
+			double discountRate, double discountAmt, double discountPrice, double subTotal, double taxRate,
+			double taxAmount, double totalCost, String prizeName)
+	{
+
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ");
+		System.out.println( "ITEM RECEIPT");
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ");
+		System.out.printf("\n%-20s%-10s", "Sod:", itemName);
+		System.out.printf("\n%-20s%1s%-10.2f", "Price:","$", itemPrice);
+		System.out.printf("\n%-20s%-10d", "Amount bought:", howMany );
+		System.out.printf("\n%-20s%-10s", "Discount Type:", discountName);
+		System.out.printf("\n%-20s%-10.3f", "Discount Rate:", discountRate);
+		System.out.printf("\n%-20s%1s%-10.2f", "Discount Amount:","$", discountAmt);
+		System.out.printf("\n%-20s%1s%-10.2f", "Discount Price:","$", discountPrice);
+		System.out.printf("\n%-20s%1s%-10.2f", "Sub Total:","$", subTotal);
+		System.out.printf("\n%-20s%-10.3f", "Tax Rate:", taxRate);
+		System.out.printf("\n%-20s%1s%-10.2f", "Total Tax:","$", taxAmount );
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ");
+		System.out.printf("\n%-20s%1s%-10.2f", "Grand Total:","$", totalCost );
+		System.out.printf("\n%-20s%-10s", "Free Prize:", prizeName);
+
+
+
+	}
+	public static char validateDiscountMenu(Scanner borrowedInput, String DiscountNames, double DiscountPrice)
+	{
+		char menuSelection = ' ';
+		displayDiscountMenu();
+		menuSelection = borrowedInput.next().toUpperCase().charAt(0);
+		System.out.println();
+
+		while (menuSelection != 'A' && menuSelection != 'B' && menuSelection != 'C' )
+		{
+			System.out.println("Please enter a valid menu option");
+			validateDiscountMenu(borrowedInput, DiscountNames, DiscountPrice);
+			menuSelection = borrowedInput.next().toUpperCase().charAt(0);
+			System.out.println();
+		}
+		return menuSelection;
+	}
+
+	public static int validateHowMany(Scanner input) 
+	{
+		int localhowMany = 0;
+		System.out.println("\n~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ~~~~ ");
+		System.out.println("Please enter the amount of sod you would like to buy");
+		localhowMany = input.nextInt();
+		System.out.println();
+
+		while (localhowMany <= 0 )
+		{
+			System.out.println("Please enter a number greater than 0");
+			System.out.println("Please enter the amount of sod you would like to buy");
+			localhowMany = input.nextInt();
+			System.out.println();
+		}
+
+
+		return localhowMany;
+	}
+
+	public static void displayItemMenu()
+	{
+		System.out.println("\n ITEM MENU");
+		System.out.printf("%-3s%11s%8s\n", "[A]", "Premium Sod", " $9.95");
+		System.out.printf("%-3s%11s%8s\n", "[B]", "Special Sod", " $5.95");
+		System.out.printf("%-3s%11s%8s\n", "[C]", "Basic Sod", " $1.95");
+		System.out.println("\nEnter your selection here:");
+	}
+
+	public static void displayDiscountMenu()
+	{
+		System.out.println("\n DISCOUNT MENU");
+		System.out.printf("%-3s%11s\n", "[A]", "Member");
+		System.out.printf("%-3s%11s\n", "[B]", "Senior" );
+		System.out.printf("%-3s%11s\n", "[C]", "None");
+		System.out.println("\nEnter your selection here:");
+	}
+
+	public static char validateItemMenu(Scanner borrowedInput, String[] itemNames, double itemPrice)
+	{
+		char menuSelection = ' ';
+		displayItemMenu();
+		menuSelection = borrowedInput.next().toUpperCase().charAt(0);
+		System.out.println();
+
+		while (menuSelection != 'A' && menuSelection != 'B' && menuSelection != 'C' )
+		{
+			System.out.println("Please enter a valid menu option");
+			displayItemMenu();
+			menuSelection = borrowedInput.next().toUpperCase().charAt(0);
+			System.out.println();
+		}
+		return menuSelection;
+	}//end of VR method
+
+	//void method
+	public static void displayWelcomeBanner()
+	{
+		System.out.println("Welcome to our program!!");
+		System.out.println("This program is designed to help");
+		System.out.println("plan your new home.");
+	}
+
+	//VR method
+	public static String getUserName(Scanner borrowedinput)
+	{
+		System.out.println("\nPlease enter your first name: ");
+		return borrowedinput.next();
+	}
+
+	public static void displayMainMenu()
+	{
+		System.out.println("\n");
+		System.out.println("\n MAIN MENU");
+		System.out.printf("%-3s%-11s\n", "[A]", MENU_OPTIONS[0]);
+		System.out.printf("%-3s%-11s\n", "[Q]", MENU_OPTIONS[1] );
+		System.out.println("\nEnter your selection here:");
+	}
+
+	//VR method
+	public static char vailidateMainMenu(Scanner borrowedInput)
+	{
+		char localSelection = ' ';
+		displayMainMenu();
+		localSelection = borrowedInput.next().toUpperCase().charAt(0);
+		System.out.println();
+
+		while (localSelection != 'A' && localSelection != 'Q')
+		{
+			System.out.println("Please enter a valid menu option");
+			displayMainMenu();
+			localSelection = borrowedInput.next().toUpperCase().charAt(0);
+			System.out.println();
+		}
+		return localSelection;
+	}//end of VR method
+	
+	public static void displayFarewellMessage(String userName) 
+	{
+		System.out.println(userName + ", thank you for using this program for your home design need's.");
+		
+	}
+
+	
+}//end of class
+
+
